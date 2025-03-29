@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useTransition, useCallback } from "react";
-import InfiniteScroll from "./components/InfiniteScroll";
 import RecipeCard from "./components/RecipeCard";
 import RecipeDetail from "./components/RecipeDetail";
+
+import SearchBar from "./components/SearchBar";
 
 interface Recipe {
   idMeal: string;
@@ -16,34 +17,41 @@ interface Recipe {
 }
 
 export default function Home() {
-  const [query, setQuery] = useState<string>("");
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [isPending, startTransition] = useTransition();
-  const [selectedRecipe, setSelectedRecipe] = useState<any | null>(null);
+  const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
 
-  const fetchRecipes = useCallback(async (searchQuery: string) => {
-    if (!searchQuery) return;
+  const fetchRecipes = useCallback(async (query: string, type: string) => {
+    if (!query) return;
     try {
-      const response = await fetch(`/api/recipes?query=${searchQuery}`);
-      const data: Recipe[] = await response.json();
+      const endpoint = `/api/recipes?query=${query}&type=${type}`;
+      const response = await fetch(endpoint);
+      const data = await response.json();
       setRecipes(data);
     } catch (error) {
       console.error("Error fetching recipes:", error);
     }
   }, []);
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setQuery(value);
+  const fetchRecipeDetails = useCallback(async (idMeal: string) => {
+    try {
+      const endpoint = `/api/recipes?query=${idMeal}&type=detail`;
+      const response = await fetch(endpoint);
+      const data = await response.json();
+      setSelectedRecipe(data);
+    } catch (error) {
+      console.error("Error fetching recipe details:", error);
+    }
+  }, []);
 
+  const handleSearch = (query: string, type: string) => {
     startTransition(() => {
-      fetchRecipes(value);
+      fetchRecipes(query, type);
     });
   };
 
   const handleSelectRecipe = (idMeal: string) => {
-    const recipe = recipes.find((r) => r.idMeal === idMeal);
-    setSelectedRecipe(recipe);
+    fetchRecipeDetails(idMeal);
   };
 
   const handleBack = () => {
@@ -51,7 +59,6 @@ export default function Home() {
   };
   return (
     <div className="min-h-screen flex flex-col items-center">
-
       <header className="w-full bg-[#9ea974] p-6 shadow- flex justify-between items-center px-8 relative">
         <div className="flex items-center space-x-3">
           <img
@@ -76,29 +83,7 @@ export default function Home() {
               "url('https://img.freepik.com/free-vector/hand-drawn-pattern-background_23-2150829939.jpg?t=st=1743266812~exp=1743270412~hmac=d7bfd10f988bcd5527428fa3840d7c00deaaa15d5021fbb5fc328926346859d3&w=900')",
           }}
         >
-          <div className="relative w-full">
-            <input
-              type="text"
-              placeholder="Search for a recipe..."
-              value={query}
-              onChange={handleSearch}
-              className="p-3 pl-10 rounded-full w-full text-lg shadow-md focus:outline-none bg-white/70 border-none backdrop-blur-sm"
-            />
-            <svg
-              className="absolute left-3 top-1/2 transform -translate-y-1/2 w-6 h-6 text-[#15BFAE]"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M21 21l-4.35-4.35m0 0a8.5 8.5 0 111.42-1.42L21 21z"
-              />
-            </svg>
-          </div>
+          <SearchBar onSearch={handleSearch} />
         </section>
       )}
 

@@ -9,7 +9,6 @@ interface RecipeDetailProps {
   strYoutube?: string;
   onBack: () => void;
 }
-
 export default function RecipeDetail({
   strMeal,
   strCategory,
@@ -27,7 +26,7 @@ export default function RecipeDetail({
         <img
           src={strMealThumb}
           alt={strMeal}
-          className="w-full h-auto rounded mb-4"
+          className="w-100 h-100 object-cover rounded-lg shadow-md"
         />
 
         <div className="flex flex-col space-y-6">
