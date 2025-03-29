@@ -84,7 +84,7 @@ export default function Home() {
           {!selectedRecipe ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
               {recipes.map((recipe) => (
-               <div className="recipe-card" key={recipe.idMeal}>
+                <div className="recipe-card" key={recipe.idMeal}>
                   <RecipeCard
                     idMeal={recipe.idMeal}
                     strMeal={recipe.strMeal}
