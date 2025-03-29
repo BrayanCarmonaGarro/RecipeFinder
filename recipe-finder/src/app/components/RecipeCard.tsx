@@ -13,7 +13,7 @@ export default function RecipeCard({
 }: RecipeCardProps) {
   return (
     <div
-      className="border p-4 rounded mb-4 max-w-md mx-auto bg-white shadow-md cursor-pointer"
+      className="p-4 rounded mb-4 max-w-md mx-auto bg-white shadow-2xl cursor-pointer hover:shadow-3xl transition-all duration-300 transform hover:scale-105"
       onClick={() => onSelect(idMeal)}>
       <h2 className="text-lg font-bold mb-2">{strMeal}</h2>
       <img
