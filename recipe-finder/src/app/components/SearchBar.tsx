@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 interface SearchBarProps {
   onSearch: (query: string, type: string) => void;
@@ -8,13 +8,15 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
   const [query, setQuery] = useState<string>("");
   const [searchType, setSearchType] = useState<string>("name");
 
-  const handleSearch = () => {
-    if (!query.trim()) {
-      alert("Please enter a search query.");
-      return;
+  useEffect(() => {
+    if (query.trim()) {
+      const delayDebounce = setTimeout(() => {
+        onSearch(query, searchType);
+      }, 500); // Espera 500ms antes de ejecutar la búsqueda
+
+      return () => clearTimeout(delayDebounce); // Limpia el temporizador si el usuario sigue escribiendo
     }
-    onSearch(query, searchType);
-  };
+  }, [query, searchType, onSearch]);
 
   return (
     <div className="flex flex-col items-center mb-4">
@@ -34,12 +36,6 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
           onChange={(e) => setQuery(e.target.value)}
           className="border p-2 rounded w-60"
         />
-        <button
-          onClick={handleSearch}
-          className="bg-blue-500 text-white p-2 rounded"
-        >
-          Search
-        </button>
       </div>
     </div>
   );
