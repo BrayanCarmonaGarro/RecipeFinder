@@ -1,58 +1,73 @@
+import { ArrowLeft, Youtube } from "lucide-react";
+
 interface RecipeDetailProps {
-    strMeal: string;
-    strCategory: string;
-    strArea: string;
-    strInstructions: string;
-    strMealThumb: string;
-    strYoutube?: string;
-    onBack: () => void;
-  }
-  
-  export default function RecipeDetail({
-    strMeal,
-    strCategory,
-    strArea,
-    strInstructions,
-    strMealThumb,
-    strYoutube,
-    onBack,
-  }: RecipeDetailProps) {
-    return (
-      <div className="p-4 max-w-2xl mx-auto bg-white shadow-md rounded">
-        <button
-          onClick={onBack}
-          className="mb-4 px-4 py-2 bg-blue-500 text-white rounded"
-        >
-          Back
-        </button>
-        <h2 className="text-2xl font-bold mb-4">{strMeal}</h2>
+  strMeal: string;
+  strCategory: string;
+  strArea: string;
+  strInstructions: string;
+  strMealThumb: string;
+  strYoutube?: string;
+  onBack: () => void;
+}
+export default function RecipeDetail({
+  strMeal,
+  strCategory,
+  strArea,
+  strInstructions,
+  strMealThumb,
+  strYoutube,
+  onBack,
+}: RecipeDetailProps) {
+  return (
+    <div className="max-w-6xl mx-auto p-8 bg-white shadow-2xl rounded-lg">
+      <div className="grid grid-cols-1 md:grid-cols-[1fr_3fr] gap-10 items-top">
         <img
           src={strMealThumb}
           alt={strMeal}
-          className="w-full h-auto rounded mb-4"
+          className="w-100 h-100 object-cover rounded-lg shadow-md"
         />
-        <p>
-          <strong>Category:</strong> {strCategory}
-        </p>
-        <p>
-          <strong>Area:</strong> {strArea}
-        </p>
-        <p className="mt-4">
-          <strong>Instructions:</strong> {strInstructions}
-        </p>
-        {strYoutube && (
-          <p className="mt-4">
-            <strong>Video:</strong>{" "}
+
+        <div className="flex flex-col space-y-6">
+          <div className="flex justify-between items-center">
+            <h2 className="text-4xl font-bold text-gray-900">{strMeal}</h2>
+            <div className="flex justify-between items-left gap-5">
+            {strYoutube && (
             <a
               href={strYoutube}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-blue-500 underline"
+              className="flex items-center space-x-2 px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition"
             >
-              Watch on YouTube
+              <Youtube size={20} />
+              <span>Watch on YouTube</span>
             </a>
+          )}
+            <button
+              onClick={onBack}
+              className="flex items-center space-x-2 px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition"
+            >
+              <ArrowLeft size={18} />
+              <span>Back</span>
+            </button>
+            </div>
+          </div>
+
+          <div className="text-lg text-gray-700 space-y-2">
+            <p>
+              <strong>Category:</strong> {strCategory}
+            </p>
+            <p>
+              <strong>Area:</strong> {strArea}
+            </p>
+          </div>
+
+          <p className="text-base text-gray-700 leading-relaxed">
+            <strong>Instructions:</strong> <br />
+            {strInstructions}
           </p>
-        )}
+
+        </div>
       </div>
-    );
-  }
+    </div>
+  );
+}
