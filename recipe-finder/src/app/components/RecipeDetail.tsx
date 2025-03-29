@@ -32,24 +32,26 @@ export default function RecipeDetail({
 
         <div className="flex flex-col space-y-6">
           <div className="flex justify-between items-center">
-            <h2 className="text-2xl font-bold text-gray-900">{strMeal}</h2>
+            <h2 className="text-3xl font-bold text-gray-900">{strMeal}</h2>
             <div className="flex justify-between items-left gap-5">
               {strYoutube && (
                 <a
                   href={strYoutube}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center space-x-2 px-4 py-3 bg-green-200 text-gray-700 rounded-md hover:bg-gray-300 transition"
+                  className="flex items-center space-x-2 px-4 py-3 bg-green-100 text-black rounded-md hover:bg-[#9ea974] transition"
                 >
                   <Youtube size={20} />
+                  <span>Tutorial</span>
                 </a>
               )}
               <button
                 onClick={onBack}
-                className="flex items-center space-x-2 px-4 py-3 bg-green-200 text-gray-700 rounded-md hover:bg-gray-300 transition"
+                className="flex items-center space-x-2 px-4 py-3 bg-green-100 text-black rounded-md hover:bg-[#9ea974] transition"
               >
                 <X size={18} />
               </button>
+
             </div>
           </div>
 
