@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useTransition, useCallback } from "react";
-import InfiniteScroll from "./components/InfiniteScroll";
 import RecipeCard from "./components/RecipeCard";
-import RecipeDetail from "./components/RecipeDetail"; 
+import RecipeDetail from "./components/RecipeDetail";
+import SearchBar from "./components/SearchBar";
 
 interface Recipe {
   idMeal: string;
@@ -16,34 +16,41 @@ interface Recipe {
 }
 
 export default function Home() {
-  const [query, setQuery] = useState<string>("");
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [isPending, startTransition] = useTransition();
-  const [selectedRecipe, setSelectedRecipe] = useState<any | null>(null);
+  const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
 
-  const fetchRecipes = useCallback(async (searchQuery: string) => {
-    if (!searchQuery) return;
+  const fetchRecipes = useCallback(async (query: string, type: string) => {
+    if (!query) return;
     try {
-      const response = await fetch(`/api/recipes?query=${searchQuery}`);
-      const data: Recipe[] = await response.json();
+      const endpoint = `/api/recipes?query=${query}&type=${type}`;
+      const response = await fetch(endpoint);
+      const data = await response.json();
       setRecipes(data);
     } catch (error) {
       console.error("Error fetching recipes:", error);
     }
   }, []);
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setQuery(value);
+  const fetchRecipeDetails = useCallback(async (idMeal: string) => {
+    try {
+      const endpoint = `/api/recipes?query=${idMeal}&type=detail`;
+      const response = await fetch(endpoint);
+      const data = await response.json();
+      setSelectedRecipe(data);
+    } catch (error) {
+      console.error("Error fetching recipe details:", error);
+    }
+  }, []);
 
+  const handleSearch = (query: string, type: string) => {
     startTransition(() => {
-      fetchRecipes(value);
+      fetchRecipes(query, type);
     });
   };
 
   const handleSelectRecipe = (idMeal: string) => {
-    const recipe = recipes.find((r) => r.idMeal === idMeal);
-    setSelectedRecipe(recipe);
+    fetchRecipeDetails(idMeal);
   };
 
   const handleBack = () => {
@@ -55,23 +62,21 @@ export default function Home() {
       <h1 className="text-2xl font-bold mb-4">Recipe Finder</h1>
       {!selectedRecipe ? (
         <>
-          <input
-            type="text"
-            placeholder="Search for a recipe..."
-            value={query}
-            onChange={handleSearch}
-            className="border p-2 rounded w-80"
-          />
+          <SearchBar onSearch={handleSearch} />
           <ul className="mt-4">
-            {recipes.map((recipe) => (
-              <RecipeCard
-                key={recipe.idMeal}
-                idMeal={recipe.idMeal}
-                strMeal={recipe.strMeal}
-                strMealThumb={recipe.strMealThumb}
-                onSelect={handleSelectRecipe}
-              />
-            ))}
+            {recipes.length > 0 ? (
+              recipes.map((recipe) => (
+                <RecipeCard
+                  key={recipe.idMeal}
+                  idMeal={recipe.idMeal}
+                  strMeal={recipe.strMeal}
+                  strMealThumb={recipe.strMealThumb}
+                  onSelect={handleSelectRecipe}
+                />
+              ))
+            ) : (
+              <p className="text-gray-500">No recipes found. Try a different search.</p>
+            )}
           </ul>
         </>
       ) : (
