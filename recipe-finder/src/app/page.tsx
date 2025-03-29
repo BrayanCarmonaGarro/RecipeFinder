@@ -3,8 +3,8 @@
 import { useState, useTransition, useCallback } from "react";
 import RecipeCard from "./components/RecipeCard";
 import RecipeDetail from "./components/RecipeDetail";
-
 import SearchBar from "./components/SearchBar";
+import Header from "./components/Header";
 
 interface Recipe {
   idMeal: string;
@@ -59,21 +59,7 @@ export default function Home() {
   };
   return (
     <div className="min-h-screen flex flex-col items-center">
-      <header className="w-full bg-[#9ea974] p-6 shadow- flex justify-between items-center px-8 relative">
-        <div className="flex items-center space-x-3">
-          <img
-            src="https://cdn-icons-png.freepik.com/256/12068/12068188.png?ga=GA1.1.796280612.1743271643&semt=ais_hybrid"
-            alt="Logo"
-            className="w-10 h-10"
-          />
-          <h1 className="text-[#0d0d0c] text-3xl font-extrabold">
-            Recipe Finder
-          </h1>
-        </div>
-        <p className="text-[#1f1f1e] text-lg font-medium opacity-90 italic tracking-wide">
-          Discover amazing flavors!
-        </p>
-      </header>
+   <Header /> {}
 
       {!selectedRecipe && (
         <section
