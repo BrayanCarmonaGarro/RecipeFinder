@@ -1,26 +1,24 @@
 "use client";
-
 import { useState, useTransition, useCallback } from "react";
-import InfiniteScroll from "./components/InfiniteScroll";
 import RecipeCard from "./components/RecipeCard";
 import RecipeDetail from "./components/RecipeDetail";
 import Header from "./components/Header";
 
-interface Recipe {
+export interface Recipe {
   idMeal: string;
   strMeal: string;
   strCategory: string;
   strArea: string;
   strInstructions: string;
   strMealThumb: string;
-  strYoutube: string;
+  strYoutube?: string;
 }
 
 export default function Home() {
   const [query, setQuery] = useState<string>("");
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [isPending, startTransition] = useTransition();
-  const [selectedRecipe, setSelectedRecipe] = useState<any | null>(null);
+  const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
 
   const fetchRecipes = useCallback(async (searchQuery: string) => {
     if (!searchQuery) return;
@@ -44,15 +42,16 @@ export default function Home() {
 
   const handleSelectRecipe = (idMeal: string) => {
     const recipe = recipes.find((r) => r.idMeal === idMeal);
-    setSelectedRecipe(recipe);
+    setSelectedRecipe(recipe || null);
   };
 
   const handleBack = () => {
     setSelectedRecipe(null);
   };
+
   return (
     <div className="min-h-screen flex flex-col items-center">
-<Header /> {}
+      <Header />
 
       {!selectedRecipe && (
         <section
@@ -87,6 +86,7 @@ export default function Home() {
           </div>
         </section>
       )}
+
       <div className="min-h-screen flex flex-col items-center justify-center p-4">
         <div className="w-full max-w-7xl px-4">
           {!selectedRecipe ? (
