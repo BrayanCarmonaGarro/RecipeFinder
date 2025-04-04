@@ -64,7 +64,7 @@ export default function Home() {
   const handleSearch = async (newQuery: string, category: string) => {
     setQuery(newQuery);
     setSelectedCategory(category);
-    
+
     setHasSearched(newQuery !== "");
 
     const params = new URLSearchParams();
@@ -135,7 +135,7 @@ export default function Home() {
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 1, duration: 0.6, ease: "easeOut" }} 
+            transition={{ delay: 1, duration: 0.6, ease: "easeOut" }}
             className="text-center text-lg text-black mt-9"
           >
             Seems like we don't have that recipe. Try searching for something else!
@@ -146,40 +146,62 @@ export default function Home() {
       <div className="min-h-screen flex flex-col items-center justify-center p-4">
         <div className="w-full max-w-7xl px-4">
           {!selectedRecipe ? (
-            <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
-                <AnimatePresence mode="popLayout">
-                  {recipes.map((recipe) => (
-                    <motion.div
-                      key={recipe.idMeal}
-                      layout
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 20 }}
-                      transition={{ duration: 0.25, ease: "easeInOut" }}
-                      className="recipe-card border-none"
-                    >
-                      <RecipeCard
-                        idMeal={recipe.idMeal}
-                        strMeal={recipe.strMeal}
-                        strMealThumb={recipe.strMealThumb}
-                        onSelect={handleSelectRecipe}
-                      />
-                    </motion.div>
-                  ))}
-                </AnimatePresence>
-              </div>
-            </>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
+              <AnimatePresence mode="popLayout">
+                {recipes.map((recipe) => (
+                  <motion.div
+                    key={recipe.idMeal}
+                    layout
+                    initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 20, scale: 0.95 }}
+                    transition={{
+                      duration: 0.5,
+                      ease: "easeInOut",
+                      type: "spring",
+                      stiffness: 200,
+                      damping: 25,
+                    }}
+                    className="recipe-card border-none"
+                    layoutId={`recipe-card-${recipe.idMeal}`}
+                  >
+                    <RecipeCard
+                      idMeal={recipe.idMeal}
+                      strMeal={recipe.strMeal}
+                      strMealThumb={recipe.strMealThumb}
+                      onSelect={handleSelectRecipe}
+                    />
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </div>
           ) : (
-            <RecipeDetail
-              strMeal={selectedRecipe.strMeal}
-              strCategory={selectedRecipe.strCategory}
-              strArea={selectedRecipe.strArea}
-              strInstructions={selectedRecipe.strInstructions}
-              strMealThumb={selectedRecipe.strMealThumb}
-              strYoutube={selectedRecipe.strYoutube}
-              onBack={handleBack}
-            />
+            <AnimatePresence>
+              <motion.div
+                key="recipe-detail"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{
+                  duration: 0.4,
+                  ease: "easeOut",
+                  type: "spring",
+                  stiffness: 200,
+                  damping: 25,
+                }}
+                layoutId={`recipe-card-${selectedRecipe.idMeal}`}
+              >
+                <RecipeDetail
+                  strMeal={selectedRecipe.strMeal}
+                  strCategory={selectedRecipe.strCategory}
+                  strArea={selectedRecipe.strArea}
+                  strInstructions={selectedRecipe.strInstructions}
+                  strMealThumb={selectedRecipe.strMealThumb}
+                  strYoutube={selectedRecipe.strYoutube}
+                  onBack={handleBack}
+                />
+              </motion.div>
+            </AnimatePresence>
           )}
         </div>
       </div>

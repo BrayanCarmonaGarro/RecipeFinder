@@ -23,7 +23,7 @@ export default function SearchBar({ query, onSearch, categories, selectedCategor
                 <select
                     value={selectedCategory}
                     onChange={handleCategoryChange}
-                    className="p-3 rounded-full text-lg shadow-md focus:outline-none bg-white/70 border-none backdrop-blur-sm hover:bg-white focus:ring-2 focus:ring-[#15BFAE]"
+                    className="p-3 rounded-full text-lg shadow-md focus:outline-none bg-white/70 border-none backdrop-blur-sm hover:bg-white"
                 >
                     <option value="">All Categories</option>
                     {categories.map((category) => (
@@ -37,7 +37,7 @@ export default function SearchBar({ query, onSearch, categories, selectedCategor
                     placeholder="Search for a recipe..."
                     value={query}
                     onChange={handleInputChange}
-                    className="p-3 pl-10 rounded-full w-full text-lg shadow-md focus:outline-none bg-white/70 border-none backdrop-blur-sm"
+                    className="p-3 pl-10 rounded-full w-full text-lg shadow-md focus:outline-none bg-white/70 border-none backdrop-blur-sm hover:bg-white"
                 />
             </div>
             <svg
