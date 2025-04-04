@@ -41,7 +41,7 @@ export default function SearchBar({ query, onSearch, categories, selectedCategor
                 />
             </div>
             <svg
-                className="absolute left-46.5 top-1/2 transform -translate-y-1/2 w-6 h-6 text-[#15BFAE]"
+                className="absolute left-45 top-1/2 transform -translate-y-1/2 w-6 h-6 text-[#15BFAE]"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
