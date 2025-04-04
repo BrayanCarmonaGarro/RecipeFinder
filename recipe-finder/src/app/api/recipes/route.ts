@@ -1,5 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 
+interface Meal {
+  idMeal: string;
+  strMeal: string;
+  strMealThumb: string;
+}
+
 export async function GET(req: NextRequest) {
   const query = req.nextUrl.searchParams.get("query");
   const category = req.nextUrl.searchParams.get("category");
@@ -15,7 +21,7 @@ export async function GET(req: NextRequest) {
       const categoryResponse = await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?c=${category}`);
       const categoryData = await categoryResponse.json();
 
-      const filteredMeals = categoryData.meals?.filter((meal: any) =>
+      const filteredMeals = categoryData.meals?.filter((meal: Meal) =>
         meal.strMeal.toLowerCase().includes(query.toLowerCase())
       );
 

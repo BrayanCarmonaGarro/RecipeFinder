@@ -5,7 +5,7 @@ import SearchBar from "./components/SearchBar";
 import RecipeCard from "./components/RecipeCard";
 import RecipeDetail from "./components/RecipeDetail";
 
-interface Recipe {
+export interface Recipe {
   idMeal: string;
   strMeal: string;
   strCategory: string;
