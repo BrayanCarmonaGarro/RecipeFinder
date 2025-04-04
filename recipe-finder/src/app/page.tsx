@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Header from "./components/Header";
 import SearchBar from "./components/SearchBar";
@@ -27,6 +27,24 @@ export default function Home() {
   const [categories, setCategories] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
+  const [hasSearched, setHasSearched] = useState<boolean>(false);
+  const [typingText, setTypingText] = useState<string>("");
+
+  const initialMessage = "Select a category or enter a recipe name to find recipes 🍽️";
+
+  useEffect(() => {
+    let index = 0;
+    const interval = setInterval(() => {
+      setTypingText(initialMessage.slice(0, index));
+      index++;
+
+      if (index > initialMessage.length) {
+        clearInterval(interval);
+      }
+    }, 50);
+
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -46,6 +64,9 @@ export default function Home() {
   const handleSearch = async (newQuery: string, category: string) => {
     setQuery(newQuery);
     setSelectedCategory(category);
+    
+    setHasSearched(newQuery !== "");
+
     const params = new URLSearchParams();
     if (newQuery) params.append("query", newQuery);
     if (category) params.append("category", category);
@@ -82,8 +103,9 @@ export default function Home() {
   return (
     <div className="min-h-screen flex flex-col items-center">
       <Header />
-      {!selectedRecipe && (
-        <section
+
+      <section className="w-full max-w-2xl rounded-xl relative">
+        <div
           className="w-full max-w-2xl mt-8 p-6 rounded-xl relative bg-cover bg-top"
           style={{
             backgroundImage:
@@ -96,33 +118,58 @@ export default function Home() {
             categories={categories}
             selectedCategory={selectedCategory}
           />
-        </section>
-      )}
+        </div>
+
+        {!selectedRecipe && recipes.length === 0 && !hasSearched && (
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1 }}
+            className="text-center text-lg text-black mt-9"
+          >
+            {typingText}
+          </motion.p>
+        )}
+
+        {!selectedRecipe && hasSearched && recipes.length === 0 && (
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1, duration: 0.6, ease: "easeOut" }} 
+            className="text-center text-lg text-black mt-9"
+          >
+            Seems like we don't have that recipe. Try searching for something else!
+          </motion.p>
+        )}
+      </section>
+
       <div className="min-h-screen flex flex-col items-center justify-center p-4">
         <div className="w-full max-w-7xl px-4">
           {!selectedRecipe ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
-              <AnimatePresence mode="popLayout">
-                {recipes.map((recipe) => (
-                  <motion.div
-                    key={recipe.idMeal}
-                    layout
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 20 }}
-                    transition={{ duration: 0.25, ease: "easeInOut" }}
-                    className="recipe-card border-none"
-                  >
-                    <RecipeCard
-                      idMeal={recipe.idMeal}
-                      strMeal={recipe.strMeal}
-                      strMealThumb={recipe.strMealThumb}
-                      onSelect={handleSelectRecipe}
-                    />
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-            </div>
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
+                <AnimatePresence mode="popLayout">
+                  {recipes.map((recipe) => (
+                    <motion.div
+                      key={recipe.idMeal}
+                      layout
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 20 }}
+                      transition={{ duration: 0.25, ease: "easeInOut" }}
+                      className="recipe-card border-none"
+                    >
+                      <RecipeCard
+                        idMeal={recipe.idMeal}
+                        strMeal={recipe.strMeal}
+                        strMealThumb={recipe.strMealThumb}
+                        onSelect={handleSelectRecipe}
+                      />
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </div>
+            </>
           ) : (
             <RecipeDetail
               strMeal={selectedRecipe.strMeal}
